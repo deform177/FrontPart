@@ -12,13 +12,13 @@ Vue.config.productionTip = false
 const routes = [
   { path: '/login', name: 'login', component: Login },
   { path: '/dataTable', name: 'dataTable', component: DataTable },
-  { path: '/registration', name: 'registration', component: Registration }
+  { path: '/registration', name: 'registration', component: Registration },
+  { path: '/', redirect: '/login' }
 ]
 
 const router = new Router({
   routes 
 })
-
 
 new Vue({
   router,
