@@ -29,7 +29,7 @@
                   <v-text-field v-model="editedItem.price" label="Price" :rules="priceRules"></v-text-field>
                 </v-flex>
 <v-flex xs12 sm6 md12>
-                  <v-text-field v-model="editedItem.details" label="Details" :rules="detailsRules"></v-text-field>
+                  <v-text-field v-model="editedItem.details" label="Details" ></v-text-field>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -87,9 +87,7 @@ nameRules: [
         v => (v && v.length <= 50) || 'Name must be less than 50 characters'
       ],
 
-detailsRules: [
-        v => (v.length <= 100) || 'Details must be less than 100 characters'
-      ],
+
 
 deteRules: [
 v => /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])\s([0-1][0-9]:[0-5][0-9]|2[0-3]:[0-5][0-9])$/.test(v)  ||  "Wrond format. Requared YYYY-mm-dd HH:mm"
@@ -116,11 +114,13 @@ v => /^[0-9]{1,7},[0-9]{1,2}$/.test(v)  ||  "Wrond format. Requared XXXXXXX,XX"
       purchases: [],
       editedIndex: -1,
       editedItem: {
+        purchase: 0,
         name: '',
         date: '',
         details: ''
       },
       defaultItem: {
+        purchase: 0,
         name: '',
         date: '',
         details: ''
@@ -177,20 +177,27 @@ this.initialize()
         if(this.$refs.form.validate())
       {
        const data = new URLSearchParams();
-data.append('purchaseid', this.editedIndex+1);
+data.append('purchaseid', this.editedItem.purchase);
 data.append('name', this.editedItem.name);
 data.append('date', this.editedItem.date);
 data.append('details', this.editedItem.details);
 data.append('price', this.editedItem.price.toString() );
  
+var purchaseid = '';
+
            axios.post('http://localhost:50625/api/values/addpurchase', data, {headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Authorization': 'Bearer '+ sessionStorage.getItem('accessToken') },
            }
-           ).catch(response => (alert('wrong'))); 
-        if (this.editedIndex > -1) {
+           ).catch(response => (alert('wrong'))).then(response => (this.editedItem.purchase = response.data.purchaseid)); 
+        
+        
+
+if (this.editedIndex > -1) {
           Object.assign(this.purchases[this.editedIndex], this.editedItem)
         } else {
-          this.purchases.push(this.editedItem)
-          
+       
+       //this.editedItem.purchase = parseInt(purchaseid);
+       this.purchases.push(this.editedItem)
+     
         }
         this.close()
       }
